@@ -19,9 +19,9 @@ This sample is a remake of the [example from TensorFlow](https://github.com/tens
 
 Screenshots
 -------------
-<img src="screenshots/C.jpg" height="400" alt="C-letter"/> 
-<img src="screenshots/W.jpg" height="400" alt="W-letter"/> 
-<img src="screenshots/nothing.jpg" height="400" alt="nothing"/> 
+![](screenshots/C.jpg) 
+![](screenshots/W.jpg) 
+![](screenshots/nothing.jpg) 
 
 Getting Started
 ---------------
