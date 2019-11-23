@@ -9,8 +9,7 @@ You can contribute in many ways:
 Types of Contributions
 ----------------------
 
-Report Bugs
-~~~~~~~~~~~
+### Report Bugs
 
 Report bugs at https://github.com/Sounce/sounce-mobile/issues.
 
@@ -20,8 +19,7 @@ If you are reporting a bug, please include:
 * Any details about your local setup that might be helpful in troubleshooting.
 * Detailed steps to reproduce the bug.
 
-Submit Feedback
-~~~~~~~~~~~~~~~
+### Submit Feedback
 
 The best way to send feedback is to file an issue at https://github.com/Sounce/sounce-mobile/issues.
 
