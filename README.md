@@ -19,9 +19,11 @@ This sample is a remake of the [example from TensorFlow](https://github.com/tens
 
 Screenshots
 -------------
+<p float="left">
 <img  src="screenshots/C.jpg" height="400" alt="C-letter"/> 
 <img  src="screenshots/W.jpg" height="400" alt="W-letter"/> 
 <img  src="screenshots/nothing.jpg" height="400" alt="nothing"/> 
+</p>
 
 Getting Started
 ---------------
@@ -35,7 +37,7 @@ Support
 - Stack Overflow: http://stackoverflow.com/questions/tagged/android
 
 If you've found an error in this sample, please file an issue:
-https://github.com/Sounce/sounce-mobile
+https://github.com/Sounce/sounce-mobile/issues
 
 Changes are encouraged, and may be submitted by forking this project and
 submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
