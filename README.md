@@ -1,26 +1,27 @@
 Sounce - test android prototype
 ===================================
-
-<div style="background-color: black;">
-	<img src="screenshots/Logo text.png" alt="logo"/> 
-</div>
+<img src="screenshots/Logo text.png" alt="logo"/> 
 
 Introduction
 --------------
-This sample is a remake of the [example from TensorFlow](https://github.com/tensorflow/examples) and is designed to test the neural network. UI is still under development, so any ideas are welcome :)
+This sample is a remake of the [example from TensorFlow](https://github.com/tensorflow/examples) and designed to test the neural network. UI is still under development, so any ideas are welcome :)
 
-Pre-requisites
+ Requirements
 --------------
 
-- Android SDK X
-- Android Build Tools vX
-- Android Support Repository
+*   Android Studio 3.2 (installed on a Linux, Mac or Windows machine)
+
+*   Android device in
+    [developer mode](https://developer.android.com/studio/debug/dev-options)
+    with USB debugging enabled
+
+*   USB cable (to connect Android device to your computer)
 
 Screenshots
 -------------
 <img src="screenshots/C.jpg" height="400" alt="C-letter"/> 
 <img src="screenshots/W.jpg" height="400" alt="W-letter"/> 
-<img src="screenshots/nothing.jpg" height="400" alt="W-letter"/> 
+<img src="screenshots/nothing.jpg" height="400" alt="nothing"/> 
 
 Getting Started
 ---------------
