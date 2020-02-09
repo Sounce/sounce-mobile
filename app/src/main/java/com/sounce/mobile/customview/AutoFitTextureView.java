@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile.customview;
+package com.sounce.mobile.customview;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -54,3 +54,4 @@ public class AutoFitTextureView extends TextureView {
         }
     }
 }
+

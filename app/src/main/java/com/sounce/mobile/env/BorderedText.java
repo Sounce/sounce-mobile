@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile.env;
+package com.sounce.mobile.env;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-
 import java.util.Vector;
 
 /** A class that encapsulates the tedious bits of rendering legible, bordered text onto a canvas. */
@@ -29,7 +28,7 @@ public class BorderedText {
 
     /**
      * Create a bordered text object with the specified interior and exterior colors, text size and
-     * alignment.
+     * alignment.sudo setfacl -m u:$USER:rwx /dev/kvm
      *
      * @param interiorColor the interior text color
      * @param exteriorColor the exterior text color

@@ -1,7 +1,6 @@
-package com.sounce.sounce_mobile.env;
+package com.sounce.mobile.env;
 
 import android.util.Log;
-
 import java.util.HashSet;
 import java.util.Set;
 

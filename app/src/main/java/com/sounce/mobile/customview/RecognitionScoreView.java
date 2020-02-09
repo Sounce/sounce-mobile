@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile.customview;
+package com.sounce.mobile.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.sounce.sounce_mobile.tflite.Classifier;
+import com.sounce.mobile.tflite.Classifier;
 
 import java.util.List;
 

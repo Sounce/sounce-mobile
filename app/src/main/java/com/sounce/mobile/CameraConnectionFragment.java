@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile;
+package com.sounce.mobile;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,8 +37,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.sounce.sounce_mobile.customview.AutoFitTextureView;
-import com.sounce.sounce_mobile.env.Logger;
+import com.sounce.mobile.customview.AutoFitTextureView;
+import com.sounce.mobile.env.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +47,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
 
 public class CameraConnectionFragment extends Fragment {
     private static final Logger LOGGER = new Logger();
@@ -251,12 +250,7 @@ public class CameraConnectionFragment extends Fragment {
         final Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    () -> Toast.makeText(activity, text, Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -546,12 +540,7 @@ public class CameraConnectionFragment extends Fragment {
                     .setMessage(getArguments().getString(ARG_MESSAGE))
                     .setPositiveButton(
                             android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(final DialogInterface dialogInterface, final int i) {
-                                    activity.finish();
-                                }
-                            })
+                            (dialogInterface, i) -> activity.finish())
                     .create();
         }
     }

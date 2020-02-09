@@ -1,2 +1,2 @@
-rootProject.name='sounce-mobile'
 include ':app'
+rootProject.name='mobile'

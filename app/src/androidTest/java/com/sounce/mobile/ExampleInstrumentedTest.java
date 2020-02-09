@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile;
+package com.sounce.mobile;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.sounce.sounce_mobile", appContext.getPackageName());
+        assertEquals("com.sounce.mobile", appContext.getPackageName());
     }
 }

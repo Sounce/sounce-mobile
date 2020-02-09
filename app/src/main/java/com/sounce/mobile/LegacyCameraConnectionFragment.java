@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile;
+package com.sounce.mobile;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -16,9 +16,9 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sounce.sounce_mobile.customview.AutoFitTextureView;
-import com.sounce.sounce_mobile.env.ImageUtils;
-import com.sounce.sounce_mobile.env.Logger;
+import com.sounce.mobile.customview.AutoFitTextureView;
+import com.sounce.mobile.env.ImageUtils;
+import com.sounce.mobile.env.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,7 +138,9 @@ public class LegacyCameraConnectionFragment extends Fragment {
         // the SurfaceTextureListener).
 
         if (textureView.isAvailable()) {
-            camera.startPreview();
+            if (camera != null) {
+                camera.startPreview();
+            }
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }

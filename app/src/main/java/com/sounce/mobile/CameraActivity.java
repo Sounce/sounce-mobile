@@ -1,4 +1,4 @@
-package com.sounce.sounce_mobile;
+package com.sounce.mobile;
 
 import android.Manifest;
 import android.app.Fragment;
@@ -35,12 +35,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.sounce.sounce_mobile.env.ImageUtils;
-import com.sounce.sounce_mobile.env.Logger;
-import com.sounce.sounce_mobile.tflite.Classifier;
+import com.sounce.mobile.env.ImageUtils;
+import com.sounce.mobile.env.Logger;
+import com.sounce.mobile.tflite.Classifier;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -78,9 +79,7 @@ public abstract class CameraActivity extends AppCompatActivity
             rotationTextView;
     protected ImageView bottomSheetArrowImageView;
 
-    private Classifier.Model model = Classifier.Model.QUANTIZED;
     private Classifier.Device device = Classifier.Device.CPU;
-    private int numThreads = -1;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -129,11 +128,13 @@ public abstract class CameraActivity extends AppCompatActivity
                         switch (newState) {
                             case BottomSheetBehavior.STATE_HIDDEN:
                                 break;
-                            case BottomSheetBehavior.STATE_EXPANDED: {
+                            case BottomSheetBehavior.STATE_EXPANDED:
+                            {
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
                             }
                             break;
-                            case BottomSheetBehavior.STATE_COLLAPSED: {
+                            case BottomSheetBehavior.STATE_COLLAPSED:
+                            {
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
                             }
                             break;
@@ -146,8 +147,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                    }
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
                 });
 
         recognitionTextView = findViewById(R.id.detected_item);
@@ -161,10 +161,6 @@ public abstract class CameraActivity extends AppCompatActivity
         cropValueTextView = findViewById(R.id.crop_info);
         cameraResolutionTextView = findViewById(R.id.view_info);
         rotationTextView = findViewById(R.id.rotation_info);
-
-        model = Classifier.Model.FLOAT;
-        device = Classifier.Device.CPU;
-        numThreads = 1;
     }
 
     protected int[] getRgbBytes() {
@@ -172,9 +168,15 @@ public abstract class CameraActivity extends AppCompatActivity
         return rgbBytes;
     }
 
-    /**
-     * Callback for android.hardware.Camera API
-     */
+    protected int getLuminanceStride() {
+        return yRowStride;
+    }
+
+    protected byte[] getLuminance() {
+        return yuvBytes[0];
+    }
+
+    /** Callback for android.hardware.Camera API */
     @Override
     public void onPreviewFrame(final byte[] bytes, final Camera camera) {
         if (isProcessingFrame) {
@@ -201,27 +203,17 @@ public abstract class CameraActivity extends AppCompatActivity
         yRowStride = previewWidth;
 
         imageConverter =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
-                    }
-                };
+                () -> ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
 
         postInferenceCallback =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        camera.addCallbackBuffer(bytes);
-                        isProcessingFrame = false;
-                    }
+                () -> {
+                    camera.addCallbackBuffer(bytes);
+                    isProcessingFrame = false;
                 };
         processImage();
     }
 
-    /**
-     * Callback for Camera2 API
-     */
+    /** Callback for Camera2 API */
     @Override
     public void onImageAvailable(final ImageReader reader) {
         // We need wait until we have some size from onPreviewSizeChosen
@@ -251,29 +243,21 @@ public abstract class CameraActivity extends AppCompatActivity
             final int uvPixelStride = planes[1].getPixelStride();
 
             imageConverter =
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            ImageUtils.convertYUV420ToARGB8888(
-                                    yuvBytes[0],
-                                    yuvBytes[1],
-                                    yuvBytes[2],
-                                    previewWidth,
-                                    previewHeight,
-                                    yRowStride,
-                                    uvRowStride,
-                                    uvPixelStride,
-                                    rgbBytes);
-                        }
-                    };
+                    () -> ImageUtils.convertYUV420ToARGB8888(
+                            yuvBytes[0],
+                            yuvBytes[1],
+                            yuvBytes[2],
+                            previewWidth,
+                            previewHeight,
+                            yRowStride,
+                            uvRowStride,
+                            uvPixelStride,
+                            rgbBytes);
 
             postInferenceCallback =
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            image.close();
-                            isProcessingFrame = false;
-                        }
+                    () -> {
+                        image.close();
+                        isProcessingFrame = false;
                     };
 
             processImage();
@@ -331,7 +315,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     protected synchronized void runInBackground(final Runnable r) {
         if (handler != null) {
-            handler.postDelayed(r, 1000);//todo: delay
+            handler.post(r);
         }
     }
 
@@ -339,14 +323,21 @@ public abstract class CameraActivity extends AppCompatActivity
     public void onRequestPermissionsResult(
             final int requestCode, final String[] permissions, final int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            if (allPermissionsGranted(grantResults)) {
                 setFragment();
             } else {
                 requestPermission();
             }
         }
+    }
+
+    private static boolean allPermissionsGranted(final int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean hasPermission() {
@@ -366,7 +357,7 @@ public abstract class CameraActivity extends AppCompatActivity
                         Toast.LENGTH_LONG)
                         .show();
             }
-            requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
+            requestPermissions(new String[] {PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
         }
     }
 
@@ -483,8 +474,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (results != null && results.size() >= 3) {
             Classifier.Recognition recognition = results.get(0);
             if (recognition != null) {
-                if (recognition.getTitle() != null)
-                    recognitionTextView.setText(recognition.getTitle());
+                if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
                 if (recognition.getConfidence() != null)
                     recognitionValueTextView.setText(
                             String.format("%.2f", (100 * recognition.getConfidence())) + "%");
@@ -492,8 +482,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             Classifier.Recognition recognition1 = results.get(1);
             if (recognition1 != null) {
-                if (recognition1.getTitle() != null)
-                    recognition1TextView.setText(recognition1.getTitle());
+                if (recognition1.getTitle() != null) recognition1TextView.setText(recognition1.getTitle());
                 if (recognition1.getConfidence() != null)
                     recognition1ValueTextView.setText(
                             String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
@@ -501,8 +490,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             Classifier.Recognition recognition2 = results.get(2);
             if (recognition2 != null) {
-                if (recognition2.getTitle() != null)
-                    recognition2TextView.setText(recognition2.getTitle());
+                if (recognition2.getTitle() != null) recognition2TextView.setText(recognition2.getTitle());
                 if (recognition2.getConfidence() != null)
                     recognition2ValueTextView.setText(
                             String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
@@ -519,23 +507,11 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     protected void showCameraResolution(String cameraInfo) {
-        cameraResolutionTextView.setText(previewWidth + "x" + previewHeight);
+        cameraResolutionTextView.setText(cameraInfo);
     }
 
     protected void showRotationInfo(String rotation) {
         rotationTextView.setText(rotation);
-    }
-
-    protected Classifier.Model getModel() {
-        return model;
-    }
-
-    protected Classifier.Device getDevice() {
-        return device;
-    }
-
-    protected int getNumThreads() {
-        return numThreads;
     }
 
     protected abstract void processImage();
@@ -546,14 +522,18 @@ public abstract class CameraActivity extends AppCompatActivity
 
     protected abstract Size getDesiredPreviewFrameSize();
 
+    protected Classifier.Device getDevice() {
+        return device;
+    }
+
     @Override
     public void onClick(View v) {
-        //todo:
+        // Do nothing
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        //todo:
+        // Do nothing.
     }
 
     @Override
